@@ -27,7 +27,9 @@ public class Row{
         for(int i = 0; i < instructions.size() - 1; i++){
             str += instructions.get(i).toStitchUp() + ",,";
         }
-        str += instructions.getLast().toStitchUp();
+        if(instructions.size() > 0){
+            str += instructions.getLast().toStitchUp();
+        }
         return str;
     }
 
