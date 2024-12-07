@@ -92,6 +92,10 @@ public class Main{
                     System.out.println("[2] Add row to specific index");
                     System.out.println("[0] Cancel");
                     int rowOption = intScanner.nextInt();
+                    if(rowOption == 0){
+                        System.out.println("Row addition cancelled.\n");
+                        break;
+                    }
                     while(rowOption > 2 || rowOption < 0){
                         System.out.print("Invalid choice, please input again: ");
                         rowOption = intScanner.nextInt();
@@ -108,13 +112,18 @@ public class Main{
                                 System.out.println("Pattern is empty, no row index exists yet!\n");
                                 break;
                             }
+                            displayRows(pattern);
                             System.out.print("Desired index of your new row: ");
                             int desiredIndex = intScanner.nextInt();
+                            if(desiredIndex == 0){
+                                System.out.println("Row addition cancelled.\n");
+                                break;
+                            }
                             while (desiredIndex < 1 || desiredIndex > pattern.getRows().size()) {
                                 System.out.print("Invalid index. Please try again: ");
                                 desiredIndex = intScanner.nextInt();
                             }
-                            pattern.addRowAt(new Row(), desiredIndex);
+                            pattern.addRowAt(new Row(), desiredIndex - 1);
                             System.out.println("New row [" + desiredIndex + "] has been added!\n");
                         } break;
                         default:{
@@ -233,7 +242,7 @@ public class Main{
                 } break;
                 // Deletes an instruction
                 case 3: {} break;
-                default: System.out.println("Sorry, nothing.");
+                default: System.out.println("Invalid choice.");
             }
             displayRowEditMenu();
             choice = intScanner.nextInt();
