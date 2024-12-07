@@ -98,7 +98,7 @@ public class Main{
             printer.close();
             fileOut.close();
         } catch (FileNotFoundException e){
-            System.out.println("Next orders not found");
+            System.out.println("Pattern not found");
         } catch(IOException e){
             System.out.println("IO error");
         }
