@@ -57,7 +57,7 @@ public class Main{
                     break;
                 // Tells users how to navigate the app.
                 case 5:
-                    System.out.println("Displaying manual...");
+                    displayManual();
                     break;
                 default: System.out.println("Invalid choice");
             }
@@ -328,6 +328,29 @@ public class Main{
                 System.out.println("[" + (i + 1) + "] " + pattern.getStitches().get(i).toString());
             }
         }
+    }
+
+    public static void displayManual(){
+        System.out.println("New to StitchUp? Here's how to use it!");
+        System.out.println("The first thing you're going to do is create a pattern in the main menu," +
+                " and then give your new pattern a title.");
+        System.out.println("Next, enter the pattern viewer and editor. Your new pattern will be completely " +
+                "empty, but it comes with a library of 6 preset knitting stitches that you can write your " +
+                "pattern with.");
+        System.out.println("To start populating your pattern, you have to create an empty row to put some stitches " +
+                "in. After creating an empty row, you can navigate to the row editor and add Instructions.");
+        System.out.println("Instructions are an object in StitchUp used to represent a line of stitches, all " +
+                "of the same stitch type (ex. 6 knit st, 2 purl st, etc). By utilizing stitch groupings this way, " +
+                "you avoid having to manually write down every solitary stitch in your pattern, streamlining the " +
+                "process of development.");
+        System.out.println("When you create an Instruction, you will have to specify what stitch and what amount of " +
+                "stitches you want this instruction to contain, then it will be put into the row you selected earlier.");
+        System.out.println("After adding some instructions to your row, you can go back to the pattern editing window" +
+                " to add another row or view your pattern so far.");
+        System.out.println("Once you're done, you can use the Export Pattern option to print your pattern into a " +
+                "text file.");
+        System.out.println("If you have any other files from StitchUp that you have saved, you can import it using " +
+                "the Import pattern feature.");
     }
 
 }
