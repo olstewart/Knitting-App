@@ -26,18 +26,22 @@ public class Instruction{
     Instruction(Stitch stitch, int stitchCount){
         this.stitchCount = stitchCount;
         this.stitch = stitch;
-        this.color = "";
+        this.color = "none";
     }
 
     //Methods
     @Override
     public String toString() {
-        if(color.isEmpty()){
+        if(color.equals("none")){
             return stitch.toString() + " " + stitchCount;
         }
         else{
             return stitch.toString() + " " + stitchCount + " in " + color;
         }
+    }
+
+    public String toStitchUp() {
+        return stitch.getType() + "," + stitchCount + "," + color;
     }
 
     @Override

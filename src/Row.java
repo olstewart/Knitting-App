@@ -21,6 +21,16 @@ public class Row{
 
     // Methods
 
+    //-- EXPORT METHOD--
+    public String toStitchUp(){
+        String str = "";
+        for(int i = 0; i < instructions.size() - 1; i++){
+            str += instructions.get(i).toStitchUp() + ",,";
+        }
+        str += instructions.getLast().toStitchUp();
+        return str;
+    }
+
     //-- ADD METHODS --
     /**
      * Adds an existing instruction to the array

@@ -13,12 +13,12 @@ public class Pattern{
         this.patternName = patternName;
         rows = new ArrayList<>();
         ArrayList<Stitch> stitchList = new ArrayList<>();
-        stitchList.add(new Stitch(1, 1, "knit"));
-        stitchList.add(new Stitch(1, 1, "purl"));
-        stitchList.add(new Stitch(0, 1, "cast-on"));
-        stitchList.add(new Stitch(1, 0, "cast-off"));
-        stitchList.add(new Stitch(2, 1, "decrease"));
-        stitchList.add(new Stitch(1, 2, "increase"));
+        stitchList.add(new Stitch("knit",1, 1,  "basic knit stitch"));
+        stitchList.add(new Stitch("purl",1, 1,  "basic purl stitch"));
+        stitchList.add(new Stitch("cast-on",0, 1,  "simple cast-on"));
+        stitchList.add(new Stitch("cast-off",1, 0,  "simple cast-off"));
+        stitchList.add(new Stitch("decrease",2, 1,  "pick up two stitches but knit only one"));
+        stitchList.add(new Stitch("increase", 1, 2, "knit two in same stitch"));
         stitches = stitchList;
     }
 
@@ -94,6 +94,17 @@ public class Pattern{
             }
         }
         else str = "Pattern " + patternName + " is currently empty!";
+        return str;
+    }
+
+    public String toStitchUp(){
+        String str = patternName + "\n";
+        for(Stitch s : stitches){
+            str += s.toStitchUp() + "\n";
+        }
+        for(Row r : rows){
+            str += r.toStitchUp() + "\n";
+        }
         return str;
     }
 }

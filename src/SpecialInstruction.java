@@ -11,7 +11,7 @@ public class SpecialInstruction extends Instruction {
      * @param stitchResult The amount of stitches this instruction will result in.
      */
     public SpecialInstruction(String description, int stitchSpan, int stitchResult) {
-        super(null, 1, "");
+        super(null, 1, "none");
         this.description = description;
         this.stitchSpan = stitchSpan;
         this.stitchResult = stitchResult;
@@ -22,7 +22,7 @@ public class SpecialInstruction extends Instruction {
      * @param instruction A description of what is supposed to happen at this point.
      */
     public SpecialInstruction(String instruction) {
-        super(null, 1, "");
+        super(null, 1, "none");
         this.description = instruction;
         stitchSpan = 0;
         stitchResult = 0;

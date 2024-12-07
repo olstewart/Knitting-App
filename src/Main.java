@@ -1,9 +1,8 @@
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import static java.lang.Integer.parseInt;
 
 public class Main{
     public static void main(String[] args){
@@ -52,30 +51,53 @@ public class Main{
                     break;
                 }
                 // Takes in a StitchUp file and converts it into a pattern object
-                case 3:
-                    System.out.println("Importing...");
-                    break;
+                case 3: {
+                    System.out.print("Enter the directory of the file you wish to import: ");
+                    String fileName = strScanner.nextLine();
+                    importPattern(fileName, userPatterns);
+                } break;
+                // Saves file into a StitchUp file, so it can be imported back into the app.
+                case 4: {
+                    if (userPatterns.isEmpty()) {
+                        System.out.println("No patterns found.\n");
+                        break;
+                    }
+                    displayPatterns(userPatterns);
+                    System.out.println("Choose a pattern to save or type 0 to exit.");
+                    int patternToSave = intScanner.nextInt();
+                    if (patternToSave == 0) {
+                        System.out.println("Export cancelled.\n");
+                        break;
+                    }
+                    while (patternToSave < 1 || patternToSave > userPatterns.size()) {
+                        System.out.print("Invalid choice, please input again: ");
+                        patternToSave = intScanner.nextInt();
+                    }
+                    savePattern(userPatterns.get(patternToSave - 1));
+                    System.out.println("Pattern saved!\n");
+                } break;
                 // Exports a pattern into a human-readable file.
-                case 4:
-                    if (userPatterns.isEmpty()){
+                case 5: {
+                    if (userPatterns.isEmpty()) {
                         System.out.println("No patterns found.\n");
                         break;
                     }
                     displayPatterns(userPatterns);
                     System.out.println("Choose a pattern to export or type 0 to exit.");
                     int patternToExport = intScanner.nextInt();
-                    if(patternToExport == 0){
+                    if (patternToExport == 0) {
                         System.out.println("Export cancelled.\n");
                         break;
                     }
-                    while (patternToExport < 1 || patternToExport > userPatterns.size()){
+                    while (patternToExport < 1 || patternToExport > userPatterns.size()) {
                         System.out.print("Invalid choice, please input again: ");
                         patternToExport = intScanner.nextInt();
                     }
                     exportPattern(userPatterns.get(patternToExport - 1));
-                    break;
+                    System.out.println("Pattern exported!\n");
+                } break;
                 // Tells users how to navigate the app.
-                case 5:
+                case 6:
                     displayManual();
                     break;
                 default: System.out.println("Invalid choice");
@@ -86,6 +108,46 @@ public class Main{
 
     }
 
+    public static void importPattern(String filename, ArrayList<Pattern> userPatterns){
+        try {
+            Scanner fileScanner = new Scanner(new File(filename));
+            Pattern newPattern = new Pattern(fileScanner.nextLine(), new ArrayList<Row>(), new ArrayList<Stitch>());
+            while(fileScanner.hasNext()){
+                String next = fileScanner.nextLine();
+                //Import stitches
+                if(next.startsWith("stitch:")){
+                    next = next.replace("stitch:", "");
+                    String[] stitchStrings = next.split(",");
+                    newPattern.addStitch(new Stitch(stitchStrings[0], parseInt(stitchStrings[1]), parseInt(stitchStrings[2]), stitchStrings[3]));
+                }
+                else{
+                    String[] row = next.split(",,");
+                    ArrayList<Instruction> instructions = new ArrayList<>();
+                    // Go through every instruction in the array
+                    for(int i = 0; i < row.length; i++){
+                        // This will split the instruction into the type, count, and color
+                        String[] instructionStrings = row[i].split(",");
+                        // This loop will find whichever stitch matches the stitch name and create the instruction using that stitch.
+                        for(int x = 0; x < newPattern.getStitches().size(); x++){
+                            if(newPattern.getStitches().get(x).getType().equals(instructionStrings[0])){
+                                instructions.add(new Instruction(newPattern.getStitches().get(x), parseInt(instructionStrings[1]), instructionStrings[2]));
+                            }
+                        }
+                    }
+                    //Add array to new row
+                    newPattern.addRow(new Row(instructions));
+                }
+            }
+            userPatterns.add(newPattern);
+            System.out.println("Pattern " + userPatterns.getLast().getPatternName() + " imported successfully!\n");
+            fileScanner.close();
+        } catch (FileNotFoundException e){
+            System.out.println("Pattern not found.");
+        } catch (Exception e){
+            System.out.println("There was an issue.");
+        }
+    }
+
     public static void exportPattern(Pattern pattern){
         System.out.println("Exporting pattern " + pattern.getPatternName() + "...");
         String filename = pattern.getPatternName() + ".txt";
@@ -94,6 +156,24 @@ public class Main{
             PrintWriter printer = new PrintWriter(fileOut);
 
             printer.print(pattern);
+
+            printer.close();
+            fileOut.close();
+        } catch (FileNotFoundException e){
+            System.out.println("Pattern not found");
+        } catch(IOException e){
+            System.out.println("IO error");
+        }
+    }
+
+    public static void savePattern(Pattern pattern){
+        System.out.println("Saving pattern " + pattern.getPatternName() + "...");
+        String filename = pattern.getPatternName() + " - StitchUp" + ".txt";
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filename);
+            PrintWriter printer = new PrintWriter(fileOut);
+
+            printer.print(pattern.toStitchUp());
 
             printer.close();
             fileOut.close();
@@ -388,9 +468,6 @@ public class Main{
                     if(stitchColor.equals("0")){
                         System.out.println("Color change cancelled.\n");
                     }
-                    else if(stitchColor.equals("none")){
-                        instruction.setColor("");
-                    }
                     else{
                         instruction.setColor(stitchColor);
                     }
@@ -410,8 +487,9 @@ public class Main{
         System.out.println("[1]: Create New Pattern\n" +
                 "[2]: View/Edit Existing Pattern\n" +
                 "[3]: Import Pattern\n" +
-                "[4]: Export Pattern\n" +
-                "[5]: User Manual\n" +
+                "[4]: Save Pattern to StitchUp File\n" +
+                "[5]: Export Pattern\n" +
+                "[6]: User Manual\n" +
                 "[0]: Exit Program\n");
     }
 

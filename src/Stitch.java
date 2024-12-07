@@ -2,7 +2,7 @@ public class Stitch {
     private int stitchSpan; // number of stitches that will get stitched over
     private int stitchResult; // amount of stitches these instructions should result in
     private String type; // type of stitch, eg. knit, purl, invdec, sl1wyif, etc
-    private String description = "";
+    private String description = "none";
 
 
     // Constructor
@@ -13,15 +13,20 @@ public class Stitch {
      * @param stitchResult The amount of stitches this stitch results in, Ex. a decrease results in 1 stitch
      * @param type         The name of the stitch, EX. knit, cast-on, s1wyif
      */
-    public Stitch(int stitchSpan, int stitchResult, String type) {
+    public Stitch(String type, int stitchSpan, int stitchResult, String description) {
+        this.type = type;
         this.stitchSpan = stitchSpan;
         this.stitchResult = stitchResult;
-        this.type = type;
+        this.description = description;
     }
 
     // Methods
     public String toString() {
         return type;
+    }
+
+    public String toStitchUp(){
+        return "stitch:" + type + "," + stitchSpan + "," + stitchResult + "," + description;
     }
 
 
@@ -33,6 +38,7 @@ public class Stitch {
         }
         else return false;
     }
+
 
     // Getters and setters for all variables
     public void setStitchSpan(int stitchSpan) {
