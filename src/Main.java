@@ -258,7 +258,7 @@ public class Main{
                     if(pattern.getRows().isEmpty()){
                         break;
                     }
-                    System.out.println("Which row do you to want edit? (Type 0 to cancel)");
+                    System.out.print("Enter which row you wish to edit or enter 0 to cancel: ");
                     int rowToEdit = intScanner.nextInt();
                     while(rowToEdit > pattern.getRows().size() || rowToEdit < 0){
                         System.out.print("Invalid choice, please input again: ");
@@ -275,7 +275,7 @@ public class Main{
                     if(pattern.getRows().isEmpty()){
                         break;
                     }
-                    System.out.println("Which row do you want delete? (Type 0 to cancel)");
+                    System.out.print("Enter which row you wish to delete or enter 0 to cancel: ");
                     int rowToDelete = intScanner.nextInt();
                     while(rowToDelete > pattern.getRows().size() || rowToDelete < 0){
                         System.out.print("Invalid choice, please input again: ");
@@ -291,18 +291,72 @@ public class Main{
                 } break;
                 // Allows the user to add a new stitch
                 case 6: {
-                    System.out.println(pattern.listOfStitches());
-                    System.out.println("This adds a stitch");
+                    System.out.print("Enter the name of the new stitch, or 0 to cancel: ");
+                    String stitchName = strScanner.nextLine();
+                    if(stitchName.equals("0")){
+                        System.out.print("New stitch addition cancelled.\n");
+                        break;
+                    }
+                    System.out.print("How many stitches do you need to pick up to perform this stitch?: ");
+                    int stitchSpan = intScanner.nextInt();
+                    System.out.print("How many stitches does this stitch leave after being completed?: ");
+                    int stitchCount = intScanner.nextInt();
+                    System.out.println("Add a short description of the stitch here, or enter 0 to add stitch without a description:");
+                    String stitchDescription = strScanner.nextLine();
+                    if(stitchDescription.equals("0")){
+                        stitchDescription = "none";
+                    }
+                    pattern.addStitch(new Stitch(stitchName, stitchSpan, stitchCount, stitchDescription));
+                    System.out.println("New stitch " + pattern.getStitches().getLast().getType() + " has been added!\n");
                 } break;
                 // Allows the user to edit which stitches are used in the pattern.
                 case 7: {
-                    System.out.print(pattern.listOfStitches());
-                    System.out.println("This edits a stitch");
+                    if(pattern.getStitches().isEmpty()){
+                        System.out.println("There are no stitches to edit!\n");
+                        break;
+                    }
+                    displayStitches(pattern);
+                    System.out.print("Enter the stitch you wish to edit or enter 0 to go back: ");
+                    int stitchToEdit = intScanner.nextInt();
+                    if(stitchToEdit == 0){
+                        break;
+                    }
+                    while(stitchToEdit > pattern.getStitches().size() || stitchToEdit < 0){
+                        System.out.print("Invalid choice, please enter again: ");
+                        stitchToEdit = intScanner.nextInt();
+                    }
+                    editStitch(pattern.getStitches().get(stitchToEdit - 1));
                 } break;
                 // Deletes a stitch, but only if the stitch isn't used in the pattern.
                 case 8: {
-                    System.out.print(pattern.listOfStitches());
-                    System.out.println("This deletes an unused stitch");
+                    if(pattern.getStitches().isEmpty()){
+                        System.out.println("There are no stitches to delete!\n");
+                        break;
+                    }
+                    displayStitches(pattern);
+                    System.out.println("\nYou cannot delete a stitch that is currently being used in this pattern.");
+                    System.out.println("Enter which stitch you wish to delete, or enter 0 to cancel: ");
+                    int stitchToDelete = intScanner.nextInt();
+                    if(stitchToDelete == 0){
+                        System.out.print("Stitch deletion cancelled.\n");
+                        break;
+                    }
+                    while(stitchToDelete > pattern.getStitches().size() || stitchToDelete < 0){
+                        System.out.print("Invalid choice, please enter again: ");
+                        stitchToDelete = intScanner.nextInt();
+                    }
+                    boolean deletionAllowed = true;
+                    for(Row r : pattern.getRows()){
+                        for(Instruction i : r.getInstructions()){
+                            if(i.getStitch().equals(pattern.getStitches().get(stitchToDelete - 1))){
+                                deletionAllowed = false;
+                            }
+                        }
+                    }
+                    if(deletionAllowed){
+                        pattern.getStitches().remove(stitchToDelete - 1);
+                        System.out.println("Stitch deleted!\n");
+                    }else {System.out.println("Stitch is currently being utilized in your pattern. Remove all uses before deletion.\n");}
                 } break;
 
                 default: System.out.println("Invalid choice");
@@ -480,6 +534,65 @@ public class Main{
         }
     }
 
+    public static void editStitch(Stitch stitch){
+        Scanner intScanner = new Scanner(System.in);
+        Scanner strScanner = new Scanner(System.in);
+        System.out.println(stitch + "\n");
+        displayStitchEditMenu();
+        int choice = intScanner.nextInt();
+        while(choice != 0){
+            switch (choice){
+                case 1: {
+                    System.out.print("Enter new stitch name, or enter 0 to cancel: ");
+                    String stitchName = strScanner.nextLine();
+                    if(stitchName.equals("0")){
+                        System.out.println("Name change cancelled.\n");
+                        break;
+                    }
+                    stitch.setType(stitchName.trim());
+                } break;
+                case 2: {
+                    System.out.print("Enter desired stitch span, or enter 0 to cancel: ");
+                    int stitchSpan = strScanner.nextInt();
+                    if(stitchSpan == 0){
+                        System.out.println("Span change cancelled.\n");
+                        break;
+                    }
+                    while(stitchSpan < 0){
+                        System.out.print("Stitch span must be greater than 0: ");
+                        stitchSpan = intScanner.nextInt();
+                    }
+                    stitch.setStitchSpan(stitchSpan);
+                } break;
+                case 3: {
+                    System.out.print("Enter desired stitch result, or enter 0 to cancel: ");
+                    int stitchResult = strScanner.nextInt();
+                    if(stitchResult == 0){
+                        System.out.println("Result change cancelled.\n");
+                        break;
+                    }
+                    while(stitchResult < 0){
+                        System.out.print("Stitch result must be greater than 0: ");
+                        stitchResult = intScanner.nextInt();
+                    }
+                    stitch.setStitchResult(stitchResult);
+                } break;
+                case 4: {
+                    System.out.println("Enter new stitch description, or enter 0 to cancel: ");
+                    String stitchDescription = strScanner.nextLine();
+                    if(stitchDescription.equals("0")){
+                        System.out.println("Description change cancelled.\n");
+                        break;
+                    }
+                    stitch.setDescription(stitchDescription.trim());
+                }
+                default: System.out.println("Invalid choice.");
+            }
+            System.out.println(stitch + "\n");
+            displayStitchEditMenu();
+            choice = intScanner.nextInt();
+        }
+    }
 
 
     // Displays main menu
@@ -503,7 +616,7 @@ public class Main{
                 "[5]: Delete Row\n" +
                 "---------------------------\n"+
                 "[6]: Add New Stitch\n" +
-                "[7]: Edit Stitch\n" +
+                "[7]: View/Edit Stitches\n" +
                 "[8]: Delete Stitch\n" +
                 "[0]: Back\n");
     }
@@ -526,9 +639,10 @@ public class Main{
 
     //Displays stitch editing menu
     public static void displayStitchEditMenu(){
-        System.out.println("[1]: Add New Stitch\n" +
-                "[2]: Edit Stitch\n" +
-                "[3]: Delete Stitch\n" +
+        System.out.println("[1]: Change Stitch Name\n" +
+                "[2]: Change Stitch Span\n" +
+                "[3]: Change Stitch Result\n" +
+                "[4]: Change Stitch Description\n" +
                 "[0]: Back\n");
     }
 
