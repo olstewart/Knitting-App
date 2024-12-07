@@ -50,6 +50,28 @@ public class Row{
     }
 
     /**
+     * Creates a new instruction and adds it to the array at a specific index.
+     * @param stitch The stitch being used in this instruction.
+     * @param stitchCount The number of times to perform this stitch.
+     * @param index The index to insert the new instruction
+     */
+    public void addNewInstructionAt(Stitch stitch, int stitchCount, int index){
+        instructions.add(new Instruction(stitch, stitchCount));
+    }
+
+    /**
+     * Creates a new instruction and adds it to the array at a specific index.
+     * @param stitch The stitch being used in this instruction.
+     * @param stitchCount The number of times to perform this stitch.
+     * @param color The color of these stitches.
+     * @param index The index to insert the new instruction.
+     */
+    public void addNewInstructionAt(Stitch stitch, int stitchCount, String color, int index){
+        instructions.add(new Instruction(stitch, stitchCount, color));
+    }
+
+
+    /**
      * Creates a new SpecialInstruction and adds it to the array.
      * @param instruction A description of what is supposed to happen at this point.
      */
