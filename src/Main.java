@@ -1,3 +1,7 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -53,7 +57,22 @@ public class Main{
                     break;
                 // Exports a pattern into a human-readable file.
                 case 4:
-                    System.out.println("Exporting...");
+                    if (userPatterns.isEmpty()){
+                        System.out.println("No patterns found.\n");
+                        break;
+                    }
+                    displayPatterns(userPatterns);
+                    System.out.println("Choose a pattern to export or type 0 to exit.");
+                    int patternToExport = intScanner.nextInt();
+                    if(patternToExport == 0){
+                        System.out.println("Export cancelled.\n");
+                        break;
+                    }
+                    while (patternToExport < 1 || patternToExport > userPatterns.size()){
+                        System.out.print("Invalid choice, please input again: ");
+                        patternToExport = intScanner.nextInt();
+                    }
+                    exportPattern(userPatterns.get(patternToExport - 1));
                     break;
                 // Tells users how to navigate the app.
                 case 5:
@@ -65,6 +84,24 @@ public class Main{
             choice = intScanner.nextInt();
         }
 
+    }
+
+    public static void exportPattern(Pattern pattern){
+        System.out.println("Exporting pattern " + pattern.getPatternName() + "...");
+        String filename = pattern.getPatternName() + ".txt";
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filename);
+            PrintWriter printer = new PrintWriter(fileOut);
+
+            printer.print(pattern);
+
+            printer.close();
+            fileOut.close();
+        } catch (FileNotFoundException e){
+            System.out.println("Next orders not found");
+        } catch(IOException e){
+            System.out.println("IO error");
+        }
     }
 
     // Given a pattern object, this function allows users to edit its attributes.
@@ -141,7 +178,7 @@ public class Main{
                     if(pattern.getRows().isEmpty()){
                         break;
                     }
-                    System.out.println("Which row do you want edit? (Type 0 to cancel)");
+                    System.out.println("Which row do you to want edit? (Type 0 to cancel)");
                     int rowToEdit = intScanner.nextInt();
                     while(rowToEdit > pattern.getRows().size() || rowToEdit < 0){
                         System.out.print("Invalid choice, please input again: ");
@@ -267,7 +304,7 @@ public class Main{
                     }
                     displayInstructions(row);
 
-                    System.out.println("Which instruction do you want t0 edit? (Type 0 to cancel)");
+                    System.out.println("Which instruction do you want to edit? (Type 0 to cancel)");
                     int instructionToEdit = intScanner.nextInt();
                     while(instructionToEdit > row.getInstructions().size() || instructionToEdit < 0){
                         System.out.print("Invalid choice, please input again: ");
@@ -281,6 +318,21 @@ public class Main{
                 // Deletes an instruction
                 case 3: {
                     displayInstructions(row);
+                    if(row.getInstructions().isEmpty()){
+                        break;
+                    }
+                    System.out.println("Which instruction do you want delete? (Type 0 to cancel)");
+                    int instructionToDelete = intScanner.nextInt();
+                    while(instructionToDelete > row.getInstructions().size() || instructionToDelete < 0){
+                        System.out.print("Invalid choice, please input again: ");
+                        instructionToDelete = intScanner.nextInt();
+                    }
+                    if(instructionToDelete == 0){
+                        System.out.println("Instruction deletion canceled.\n");
+                        break;
+                    }
+                    row.getInstructions().remove(instructionToDelete - 1);
+                    System.out.println("Instruction deleted!\n");
 
                 } break;
                 default: System.out.println("Invalid choice.");
@@ -351,6 +403,8 @@ public class Main{
         }
     }
 
+
+
     // Displays main menu
     public static void displayMainMenu() {
         System.out.println("[1]: Create New Pattern\n" +
@@ -418,7 +472,6 @@ public class Main{
                 System.out.println("[" + (i + 1) + "] " + pattern.getRows().get(i).toString());
             }
         }
-        System.out.println("\n");
     }
 
     // Prints a list of instructions in a particular row
@@ -430,8 +483,9 @@ public class Main{
             for(int i = 0; i < row.getInstructions().size(); i++){
                 System.out.println("[" + (i + 1) + "] " + row.getInstructions().get(i).toString());
             }
+            System.out.println();
         }
-        System.out.println("\n");
+
     }
 
     // Prints a  of stitches in a particular pattern

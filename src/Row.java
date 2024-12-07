@@ -56,7 +56,7 @@ public class Row{
      * @param index The index to insert the new instruction
      */
     public void addNewInstructionAt(Stitch stitch, int stitchCount, int index){
-        instructions.add(new Instruction(stitch, stitchCount));
+        instructions.add(index, new Instruction(stitch, stitchCount));
     }
 
     /**
@@ -67,7 +67,7 @@ public class Row{
      * @param index The index to insert the new instruction.
      */
     public void addNewInstructionAt(Stitch stitch, int stitchCount, String color, int index){
-        instructions.add(new Instruction(stitch, stitchCount, color));
+        instructions.add(index, new Instruction(stitch, stitchCount, color));
     }
 
 
