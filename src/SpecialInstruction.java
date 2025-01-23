@@ -17,6 +17,11 @@ public class SpecialInstruction extends Instruction {
         this.stitchResult = stitchResult;
     }
 
+    @Override
+    public String toStitchUp() {
+        return "@sp@" + description + "," + stitchSpan + "," + stitchResult;
+    }
+
     /**
      * This SpecialInstruction constructor takes only a String describing the instruction and automatically sets span and result to 0
      * @param instruction A description of what is supposed to happen at this point.
@@ -48,7 +53,7 @@ public class SpecialInstruction extends Instruction {
     public String getDescription() {
         return description;
     }
-    public void setInstruction(String instruction) {
+    public void setDescription(String instruction) {
         this.description = instruction;
     }
 

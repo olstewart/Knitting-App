@@ -101,6 +101,10 @@ public class Row{
         instructions.add(new SpecialInstruction(instruction, stitchSpan, stitchResult));
     }
 
+    public void addNewSpecialInstructionAt(String instruction, int stitchSpan, int stitchResult, int index){
+        instructions.add(index, new SpecialInstruction(instruction, stitchSpan, stitchResult));
+    }
+
     //--REMOVAL METHOD--
 
     /**
